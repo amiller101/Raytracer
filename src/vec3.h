@@ -4,9 +4,17 @@
 #include <cmath>
 #include <iostream>
 
+using point3 = Vec3;
+
 class Vec3 {
 public:
-    double x, y, z;
+    //union allows two structures to occupy the same memory. I am effectively creating a set of alias variables.
+    union {
+        //for geometry
+        struct { double x, y, z; };
+        //for color
+        struct { double r, g, b; };
+    };
 
     Vec3() : x(0), y(0), z(0) {}
     Vec3(double x, double y, double z) : x(x), y(y), z(z) {}
@@ -16,7 +24,7 @@ public:
     //yet we enforce using it AS IF it were just a copy of Vec3 (cannot alter).
 
     //Addition
-    Vec3 operator+(const Vec3 &summand) {
+    Vec3 operator+(const Vec3 &summand) const {
         return Vec3(
         this->x + summand.x,
         this->y + summand.y,
@@ -33,7 +41,7 @@ public:
     }
 
     //Scalar multiplication
-    Vec3 operator*(const double scalar) {
+    Vec3 operator*(const double scalar) const {
         return Vec3(
         x * scalar,
         y * scalar,
@@ -50,16 +58,15 @@ public:
     }
 
     //Dot Product
-    Vec3 operator*(const Vec3& other) {
-        return Vec3(
-            this->x * other.x,
-            this->y * other.y,
-            this->z * other.z
-        );
+    double operator*(const Vec3& other) const {
+        return
+            (this->x * other.x +
+            this->y * other.y +
+            this->z * other.z);
     }
 
     //Negation
-    Vec3 operator-() { 
+    Vec3 operator-() const { 
         return Vec3(
             -(this->x),
             -(this->y),
@@ -67,7 +74,7 @@ public:
         );
     }
     //Subtraction
-    Vec3 operator-(const Vec3 subtrahend) {
+    Vec3 operator-(const Vec3 subtrahend) const {
         return Vec3(
             this->x - subtrahend.x,
             this->y - subtrahend.y,
@@ -83,15 +90,19 @@ public:
         return *this;
     }
 
+    //Scalar division
+    Vec3 operator/(const double t) const { return (Vec3(*this) * (1/t)); }
+
+    //In-place scalar division
     Vec3& operator/=(double t) { return *this *= 1/t; }
 
-    //double length() const { return std::sqrt(length_squared()); }
-    //double length_squared() const { return (*this)*(*this); }
+    double length() const { return std::sqrt(length_squared()); }
+    double length_squared() const { return ((*this)*(*this)); }
 
-    //Vec3 unit_vector(const Vec3& vec)
-   // {
-    //    return vec/=(vec*vec);
-    //}
+    static Vec3 unit_vector(const Vec3& vec)
+    {
+        return Vec3(vec/vec.length());
+    }
 
 };
 
