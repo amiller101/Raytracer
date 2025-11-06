@@ -3,15 +3,15 @@
 
 class Ray {
 
-    Vec3 origin;
-    Vec3 dir;
+    vec3 origin;
+    vec3 dir;
 
     Ray() {}
-    Ray(const Vec3& origin, const Vec3& dir){
+    Ray(const vec3& origin, const vec3& dir){
         this->origin = origin; this->dir = dir;
     }
 
-    Vec3 at(double t) const {
+    vec3 at(double t) const {
         return origin + (dir * t);
     }
 

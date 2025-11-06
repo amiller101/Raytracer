@@ -17,7 +17,7 @@ int main() {
             auto r = double(i) / (image_width-1);
             auto g = double(j) / (image_height-1);
             auto b = 0.25;
-            Vec3 pixel_color(r, g, b);
+            vec3 pixel_color(r, g, b);
             write_color(std::cout, pixel_color);
         }
     }

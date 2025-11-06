@@ -4,9 +4,9 @@
 #include <cmath>
 #include <iostream>
 
-using point3 = Vec3;
+using point3 = vec3;
 
-class Vec3 {
+class vec3 {
 public:
     //union allows two structures to occupy the same memory. I am effectively creating a set of alias variables.
     union {
@@ -16,96 +16,99 @@ public:
         struct { double r, g, b; };
     };
 
-    Vec3() : x(0), y(0), z(0) {}
-    Vec3(double x, double y, double z) : x(x), y(y), z(z) {}
+    vec3() : x(0), y(0), z(0) {}
+    vec3(double x, double y, double z) : x(x), y(y), z(z) {}
 
     //the following is a series of operator definitions and overloads for the vec3 class
-    //Vec3 is passed in as a const ref to Vec3 so that we don't have to create a copy of the variable each time (wastes space and time),
-    //yet we enforce using it AS IF it were just a copy of Vec3 (cannot alter).
+    //vec3 is passed in as a const ref to vec3 so that we don't have to create a copy of the variable each time (wastes space and time),
+    //yet we enforce using it AS IF it were just a copy of vec3 (cannot alter).
 
-    //Addition
-    Vec3 operator+(const Vec3 &summand) const {
-        return Vec3(
-        this->x + summand.x,
-        this->y + summand.y,
-        this->z + summand.z
-        );
-    }
     
     //In-place Addition
-    Vec3& operator+=(const Vec3 &summand) {
+    vec3& operator+=(const vec3 &summand) {
         this->x += summand.x;
         this->y += summand.y;
         this->z += summand.z;
         return *this;
     }
 
-    //Scalar multiplication
-    Vec3 operator*(const double scalar) const {
-        return Vec3(
-        x * scalar,
-        y * scalar,
-        z * scalar
-        );
-    }
-
     //In-place Scalar multiplication
-    Vec3& operator*=(const double scalar) {
+    vec3& operator*=(const double scalar) {
         x *= scalar;
         y *= scalar;
         z *= scalar;
         return *this;
     }
 
-    //Dot Product
-    double operator*(const Vec3& other) const {
-        return
-            (this->x * other.x +
-            this->y * other.y +
-            this->z * other.z);
-    }
-
-    //Negation
-    Vec3 operator-() const { 
-        return Vec3(
-            -(this->x),
-            -(this->y),
-            -(this->z)
-        );
-    }
-    //Subtraction
-    Vec3 operator-(const Vec3 subtrahend) const {
-        return Vec3(
-            this->x - subtrahend.x,
-            this->y - subtrahend.y,
-            this->z - subtrahend.z
-        );
-    }
-
     //In-place subtraction
-    Vec3& operator-=(const Vec3& subtrahend) {
+    vec3& operator-=(const vec3& subtrahend) {
         this->x -= subtrahend.x;
         this->y -= subtrahend.y;
         this->z -= subtrahend.z;
         return *this;
     }
 
-    //Scalar division
-    Vec3 operator/(const double t) const { return (Vec3(*this) * (1/t)); }
-
     //In-place scalar division
-    Vec3& operator/=(double t) { return *this *= 1/t; }
+    vec3& operator/=(double scalar) { 
+        return *this *= 1 / scalar; 
+    }
 
     double length() const { return std::sqrt(length_squared()); }
-    double length_squared() const { return ((*this)*(*this)); }
-
-    static Vec3 unit_vector(const Vec3& vec)
-    {
-        return Vec3(vec/vec.length());
-    }
+    double length_squared() const { return x*x + y*y + z*z; }
 
 };
 
-inline std::ostream& operator<<(std::ostream &out, const Vec3 &v) {
+inline std::ostream& operator<<(std::ostream &out, const vec3 &v) {
     return out << v.x << " " << v.y << " " << v.z;
+}
+
+inline std::ostream& operator<<(std::ostream& out, const vec3& v) {
+    return out << v.x << ' ' << v.y << ' ' << v.z;
+}
+
+// Addition
+inline vec3 operator+(const vec3& a, const vec3& b) {
+    return vec3(a.x + b.x, a.y + b.y, a.z + b.z);
+}
+
+// Subtraction
+inline vec3 operator-(const vec3& a, const vec3& b) {
+    return vec3(a.x - b.x, a.y - b.y, a.z - b.z);
+}
+
+// Negation
+inline vec3 operator-(const vec3& v) {
+    return vec3(-v.x, -v.y, -v.z);
+}
+
+// Scalar multiplication (vec * scalar)
+inline vec3 operator*(const vec3& v, double scalar) {
+    return vec3(v.x * scalar, v.y * scalar, v.z * scalar);
+}
+
+// Scalar multiplication (scalar * vec)
+inline vec3 operator*(double scalar, const vec3& v) {
+    return vec3(v.x * scalar, v.y * scalar, v.z * scalar);
+}
+
+// Scalar division
+inline vec3 operator/(const vec3& v, double scalar) {
+    return v * (1 / scalar);
+}
+
+// Dot product
+inline double dot(const vec3& a, const vec3& b) {
+    return a.x * b.x + a.y * b.y + a.z * b.z;
+}
+
+//Cross product
+inline vec3 cross(const vec3& a, const vec3& b) {
+    return vec3(a.y * b.z - a.z * b.y,
+                a.z * b.x - a.x * b.z,
+                a.x * b.y - a.y * b.x);
+}
+
+// Unit vector
+inline vec3 unit_vector(const vec3& v) {
+    return v / v.length();
 }
