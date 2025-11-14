@@ -1,18 +1,21 @@
 #pragma once
 #include "vec3.h"
 
+using point3 = Vec3;
+
 class Ray {
 
-    vec3 origin;
-    vec3 dir;
+    public:
+    Vec3 origin;
+    Vec3 direction;
 
     Ray() {}
-    Ray(const vec3& origin, const vec3& dir){
-        this->origin = origin; this->dir = dir;
+    Ray(const Vec3& origin, const Vec3& dir){
+        this->origin = origin; this->direction = dir;
     }
 
-    vec3 at(double t) const {
-        return origin + (dir * t);
+    Vec3 at(double t) const {
+        return origin + (direction * t);
     }
 
 };
