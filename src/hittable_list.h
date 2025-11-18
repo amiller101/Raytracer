@@ -18,7 +18,7 @@ public:
         objects.push_back(object);
     }
 
-    //returns true if hit something and stores the first hit object into rec argument.
+    //returns true if hit something and stores the object that is hit first into the hit_record rec.
     bool hit(const Ray& r, interval ray_t, hit_record& rec) const override {
         hit_record temp_rec;
         bool hit_anything = false;

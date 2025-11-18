@@ -29,7 +29,7 @@ class Sphere : public hittable
         //find the nearest root in the given time range
         auto root = (h - sqrtd) / a;
         if (!ray_t.surrounds(root)) {
-            root = (h+sqrtd) / a;
+            root = (h + sqrtd) / a;
             if (!ray_t.surrounds(root)) {
                 return false;
             }   
