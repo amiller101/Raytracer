@@ -8,3 +8,5 @@
 ## Create Eckart Young approximation of last rendered image (Not functional yet):
     build/Eckart_Young.exe < results/image.ppm
     the image is saved at results/svd_image.ppm
+
+To use Eckart_younge, must add include folder and Eigen library.

@@ -14,10 +14,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 add_executable(Raytracer 
     src/main.cpp)
 
+
+
+
+# --- Saved for Eckart Young in future --- #   
 #add_executable(Eckart_Young 
     #src/Eckart_Young.cpp)
 
-    
 #Look in /include for headers
 #target_include_directories(Eckart_Young PRIVATE ${CMAKE_SOURCE_DIR}/include)
-target_include_directories(Raytracer PRIVATE ${CMAKE_SOURCE_DIR}/include)
+#target_include_directories(Raytracer PRIVATE ${CMAKE_SOURCE_DIR}/include)
