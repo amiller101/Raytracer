@@ -2,6 +2,7 @@
 //Modern replacement for the more classic #ifndef VEC3_h <newline> #def<VEC3_H> <code here> #endif
 #pragma once
 
+//#include "utility.h"
 
 class Vec3 {
 public:
@@ -34,6 +35,15 @@ public:
         x *= scalar;
         y *= scalar;
         z *= scalar;
+        return *this;
+    }
+
+    //In-place Vector entry-wise multiplication
+    //In-place Scalar multiplication
+    Vec3& operator*=(const Vec3& v) {
+        x *= v.x;
+        y *= v.y;
+        z *= v.z;
         return *this;
     }
 
@@ -104,4 +114,35 @@ inline Vec3 cross(const Vec3& a, const Vec3& b) {
 // Unit vector
 inline Vec3 unit_vector(const Vec3& v) {
     return v / v.length();
+}
+
+//returns random vector with canonical entries
+inline Vec3 random_vector() 
+{
+    return Vec3(random_double(), random_double(), random_double());
+}
+
+//returns random vector in [min, max)
+inline Vec3 random_vector(double min, double max) 
+{
+    return Vec3(random_double(min, max), random_double(min, max), random_double(min, max));
+}
+
+//returns random unit vector
+inline Vec3 random_unit_vector() {
+    while (true) {
+        auto p = random_vector(-1,1);
+        auto lensq = p.length_squared();
+        if (1e-160 < lensq && lensq <= 1)
+            return p / sqrt(lensq);
+    }
+}
+
+//returns a random unit vector on the hemisphere according to the input normal
+inline Vec3 random_on_hemisphere(const Vec3& normal) {
+    Vec3 on_unit_sphere = random_unit_vector();
+    if (dot(on_unit_sphere, normal) > 0.0)
+        return on_unit_sphere;
+    else
+        return -on_unit_sphere;
 }

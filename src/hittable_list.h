@@ -20,8 +20,9 @@ public:
 
     //returns true if hit something and stores the object that is hit first into the hit_record rec.
     bool hit(const Ray& r, interval ray_t, hit_record& rec) const override {
-        hit_record temp_rec;
+
         bool hit_anything = false;
+        hit_record temp_rec;
         auto closest_thus_far = ray_t.max;
 
         for (const auto& object : objects) {
