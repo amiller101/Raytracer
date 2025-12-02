@@ -8,7 +8,7 @@
 class Sphere : public hittable
 {
     public:
-    Sphere(const Vec3& center, double radius) : center(center), radius(std::fmax(0, radius)) {
+    Sphere(const Vec3& center, double radius, shared_ptr<material> mat) : center(center), radius(std::fmax(0, radius)), mat(mat) {
         //TODO init material pointer 'mat'
     }
 

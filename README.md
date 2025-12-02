@@ -1,6 +1,7 @@
-## Build project
-
-## Run in terminal:
+## How To Use
+# Build Project 
+Build in VScode, everything is already setup properly with CMakeLists.txt
+# Run in terminal:
     build/Raytracer.exe > results/image.ppm
     the image is saved at results/image.ppm
     Open with irfanview

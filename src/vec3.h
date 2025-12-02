@@ -101,6 +101,11 @@ inline Vec3 operator*(double scalar, const Vec3& v) {
     return Vec3(v.x * scalar, v.y * scalar, v.z * scalar);
 }
 
+// Entry-wise multiplication (vec * vec)
+inline Vec3 operator*(const Vec3& v, const Vec3& u) {
+    return Vec3(v.x * u.x, v.y * u.y, v.z * u.z);
+}
+
 // Scalar division
 inline Vec3 operator/(const Vec3& v, double scalar) {
     return v * (1 / scalar);
@@ -152,4 +157,9 @@ inline Vec3 random_on_hemisphere(const Vec3& normal) {
         return on_unit_sphere;
     else
         return -on_unit_sphere;
+}
+
+//returns symetric reflection of the input vector about the input normal vector
+inline Vec3 reflect(const Vec3& in, const Vec3& normal) {
+    return Vec3(in - (2 * normal * dot(in, normal)));
 }

@@ -29,6 +29,21 @@ class lambertian : public material{
         }
 
         scattered = Ray(rec.collision, scatter_direction);
+        attenuation = albedo;
+        return true;
+    }
+
+  private:
+    color albedo;
+};
+
+class specular :public material {
+  public:
+    specular(const color& albedo) : albedo(albedo) {}
+
+    bool scatter(const Ray& r_in, const hit_record& rec, color& attenuation, Ray& scattered) const override {
+        scattered = Ray(rec.collision, reflect(r_in.direction, rec.normal));
+        attenuation = albedo;
         return true;
     }
 
