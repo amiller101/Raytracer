@@ -8,7 +8,9 @@
 class Sphere : public hittable
 {
     public:
-    Sphere(const Vec3& center, double radius) : center(center), radius(std::fmax(0, radius)) {}
+    Sphere(const Vec3& center, double radius) : center(center), radius(std::fmax(0, radius)) {
+        //TODO init material pointer 'mat'
+    }
 
     //solves quadratic formula for time t and store's hit data in rec.
     //Uses b = -2h to simplify quadratic formula.
@@ -40,6 +42,7 @@ class Sphere : public hittable
         //div by radius normalizes
         Vec3 outward_normal = (rec.collision - center) / radius;
         rec.set_face_normal(r, outward_normal);
+        rec.mat = mat;
 
         return true;
     }
@@ -47,5 +50,5 @@ class Sphere : public hittable
     private:
     Vec3 center;
     double radius;
-
+    shared_ptr<material> mat;
 };

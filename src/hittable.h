@@ -1,11 +1,14 @@
 #pragma once
 #include "utility.h"
 
+class material;
+
 class hit_record
 {
     public:
     Vec3 collision;
     Vec3 normal;
+    shared_ptr<material> mat;
     double t;
     bool front_face;
 

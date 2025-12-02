@@ -60,6 +60,13 @@ public:
         return *this *= 1 / scalar; 
     }
 
+    //Returns true if near zero in all dimensions
+    bool near_zero()
+    {
+        auto threshold = 1e-8;
+        return ((std::fabs(x) < threshold) && (std::fabs(y) < threshold) && (std::fabs(z) < threshold));
+    }
+
     double length() const { return std::sqrt(length_squared()); }
     double length_squared() const { return x*x + y*y + z*z; }
 
