@@ -163,3 +163,13 @@ inline Vec3 random_on_hemisphere(const Vec3& normal) {
 inline Vec3 reflect(const Vec3& in, const Vec3& normal) {
     return Vec3(in - (2 * normal * dot(in, normal)));
 }
+
+//returns the refracted ray resulting from the unit vector uv passing through a material with given refractive index ratio
+//and with given normal of ray incidence.
+//refractive_indices_ration = refractive index of original medium / '' of new medium
+inline Vec3 refract(const Vec3& uv, const Vec3& normal, double refractive_indices_ratio) {
+    auto cos_theta = std::fmin(dot(-uv, normal), 1.0);
+    Vec3 r_out_perp = refractive_indices_ratio * (uv + cos_theta*normal);
+    Vec3 r_out_parallel = -std::sqrt(std::fabs(1.0 - r_out_perp.length_squared())) * normal;
+    return r_out_perp + r_out_parallel;
+}
