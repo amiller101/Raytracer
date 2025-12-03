@@ -25,7 +25,7 @@ class lambertian : public material{
         //Catch edge-case scatter direction
         if (scatter_direction.near_zero())
         {
-            scatter_direction = rec.normal;
+          scatter_direction = rec.normal;
         }
 
         scattered = Ray(rec.collision, scatter_direction);
@@ -39,14 +39,20 @@ class lambertian : public material{
 
 class specular :public material {
   public:
-    specular(const color& albedo) : albedo(albedo) {}
+    specular(const color& albedo, double fuzz) : albedo(albedo), fuzz(fuzz < 1 ? fuzz : 1) {}
 
     bool scatter(const Ray& r_in, const hit_record& rec, color& attenuation, Ray& scattered) const override {
-        scattered = Ray(rec.collision, reflect(r_in.direction, rec.normal));
+        //calculate reflection
+        Vec3 reflected = reflect(r_in.direction, rec.normal);
+        //add fuzziness
+        reflected = unit_vector(reflected) + (fuzz * random_unit_vector());
+        scattered = Ray(rec.collision, reflected);
         attenuation = albedo;
-        return true;
+        //ignore ray if fuzziness offest sends it through the object of original ray incidence.
+        return (dot(reflected, rec.normal) > 0);
     }
 
   private:
     color albedo;
+    double fuzz;
 };
