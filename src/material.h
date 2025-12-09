@@ -28,7 +28,7 @@ class lambertian : public material{
           scatter_direction = rec.normal;
         }
 
-        scattered = Ray(rec.collision, scatter_direction);
+        scattered = Ray(rec.collision, scatter_direction, r_in.time);
         attenuation = albedo;
         return true;
     }
@@ -46,10 +46,10 @@ class specular :public material {
         Vec3 reflected = reflect(r_in.direction, rec.normal);
         //add fuzziness
         reflected = unit_vector(reflected) + (fuzz * random_unit_vector());
-        scattered = Ray(rec.collision, reflected);
+        scattered = Ray(rec.collision, reflected, r_in.time);
         attenuation = albedo;
         //ignore ray if fuzziness offest sends it through the object of original ray incidence.
-        return (dot(reflected, rec.normal) > 0);
+        return (dot(scattered.direction, rec.normal) > 0);
     }
 
   private:
@@ -81,7 +81,7 @@ class dielectric : public material {
       {
         direction = refract(unit_direction, rec.normal, ri);
       }
-      scattered = Ray(rec.collision, direction);
+      scattered = Ray(rec.collision, direction, r_in.time);
       return true;
     }
 
