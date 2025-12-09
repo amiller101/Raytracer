@@ -8,9 +8,7 @@
 class Sphere : public hittable
 {
     public:
-    Sphere(const Vec3& center, double radius, shared_ptr<material> mat) : center(center), radius(std::fmax(0, radius)), mat(mat) {
-        //TODO init material pointer 'mat'
-    }
+    Sphere(const Vec3& center, double radius, shared_ptr<material> mat) : center(center), radius(std::fmax(0, radius)), mat(mat) {}
 
     //solves quadratic formula for time t and store's hit data in rec.
     //Uses b = -2h to simplify quadratic formula.
