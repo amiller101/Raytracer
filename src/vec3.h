@@ -21,6 +21,28 @@ public:
     //Vec3 is passed in as a const ref to Vec3 so that we don't have to create a copy of the variable each time (wastes space and time),
     //yet we enforce using it AS IF it were just a copy of Vec3 (cannot alter).
 
+    //for read/write indexing
+    double& operator[](int i)
+    {
+        switch (i) {
+        case 0: return x;
+        case 1: return y;
+        case 2: return z;
+        default: throw "invalid vector indexing";
+        }
+    }
+
+    //for read-only indexing
+    const double& operator[](int i) const
+    {
+        switch (i) {
+        case 0: return x;
+        case 1: return y;
+        case 2: return z;
+        default: throw "invalid vector indexing";
+        }
+    }
+    
     
     //In-place Addition
     Vec3& operator+=(const Vec3 &summand) {

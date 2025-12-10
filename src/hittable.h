@@ -1,5 +1,6 @@
 #pragma once
 #include "utility.h"
+#include "bounding_box.h"
 
 class material;
 
@@ -28,4 +29,5 @@ class hittable
     //with check for hits over time interval [t_min, t_max], store any hits into the hit_records data array||object
     virtual bool hit(const Ray& r, interval ray_t, hit_record& rec) const = 0;
 
+    virtual Bounding_Box bounding_box() const = 0;
 };

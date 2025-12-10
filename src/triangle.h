@@ -5,12 +5,24 @@
 
 #define epsilon 1e-5
 #define cmpfloat(x, y) (abs(x-y) <= epsilon)
+#define MIN(x, y) (cmpfloat(x, y) ? y : x)
+#define MAX(x, y) (cmpfloat(x, y) ? x : y)
 
 class Triangle : public hittable
 {
     public:
     Triangle(const Vec3& a, const Vec3& b, const Vec3& c, shared_ptr<material> mat) : a(a), b(b), c(c), mat(mat) {
         normal = cross(b - a, c - a);
+
+        interval interval_x = interval(MIN(MIN(a.x, b.x), c.x), MAX(MAX(a.x, b.x), c.x));
+        interval interval_y = interval(MIN(MIN(a.y, b.y), c.y), MAX(MAX(a.y, b.y), c.y));
+        interval interval_z = interval(MIN(MIN(a.z, b.z), c.z), MAX(MAX(a.z, b.z), c.z));
+
+        bbox = Bounding_Box(
+            interval_x,
+            interval_y,
+            interval_z
+        );
     }
 
     //check if hit with plane, if yes then calculate barycentric coords and check if pos, if yes then hit at intersection with plane (store in rec)
@@ -48,6 +60,8 @@ class Triangle : public hittable
 
         return true;
     }
+    
+    Bounding_Box bounding_box() const override { return bbox;}
 
     private:
     Vec3 a;
@@ -55,5 +69,6 @@ class Triangle : public hittable
     Vec3 c;
     Vec3 normal;
     shared_ptr<material> mat;
+    Bounding_Box bbox;
 };
 

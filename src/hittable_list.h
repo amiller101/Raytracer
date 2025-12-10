@@ -1,7 +1,9 @@
 #pragma once
 #include "utility.h"
 #include "Hittable.h"
+#include "bounding_box.h"
 #include <vector>
+
 
 
 class hittable_list : public hittable{
@@ -16,6 +18,7 @@ public:
 
     void add(shared_ptr<hittable> object) {
         objects.push_back(object);
+        bbox = Bounding_Box(bbox, object->bounding_box());
     }
 
     //returns true if hit something and stores the object that is hit first into the hit_record rec.
@@ -35,4 +38,9 @@ public:
 
         return hit_anything;
     }
+
+    Bounding_Box bounding_box() const override { return bbox;}
+
+    private:
+    Bounding_Box bbox;
 };

@@ -6,7 +6,14 @@ class interval{
 
         interval() : min(+infinity), max(-infinity) {} // Default interval is empty
         interval(double min, double max) : min(min), max(max) {}
-
+        
+        //create interval tightly encompassing the input intervals
+        interval(const interval& a, const interval& b)
+        {
+            min = a.min <= b.min ? a.min : b.min;
+            max = a.max >= b.max ? a.max : b.max;
+        }
+        
         double size() const{
             return max - min;
         }
@@ -23,6 +30,12 @@ class interval{
             if (x < min) return min;
             if (x > max) return max;
             return x;
+        }
+
+        //expands the interval by delta, splitting delta and adding half to each side of the range
+        interval expand(double delta) const {
+            auto padding = delta/2;
+            return interval(min - padding, max + padding);
         }
 
         static const interval empty, universe;
