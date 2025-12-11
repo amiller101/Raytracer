@@ -20,7 +20,6 @@ class lambertian : public material{
     lambertian(const color& albedo) : tex(make_shared<solid_color>(albedo)) {}
     lambertian(shared_ptr<texture> tex) : tex(tex) {}
 
-
     //Returns true because it always reflects. 
     bool scatter(const Ray& r_in, const hit_record& rec, color& attenuation, Ray& scattered) const override {
         auto scatter_direction = rec.normal + random_unit_vector();
@@ -37,13 +36,14 @@ class lambertian : public material{
     }
 
   private:
-    color albedo;
     shared_ptr<texture> tex;
 };
 
 class specular :public material {
   public:
-    specular(const color& albedo, double fuzz) : albedo(albedo), fuzz(fuzz < 1 ? fuzz : 1) {}
+    specular(const color& albedo, double fuzz) : tex(make_shared<solid_color>(albedo)), fuzz(fuzz < 1 ? fuzz : 1) {}
+    specular(shared_ptr<texture> tex, double fuzz) : tex(tex), fuzz(fuzz < 1 ? fuzz : 1) {}
+
 
     bool scatter(const Ray& r_in, const hit_record& rec, color& attenuation, Ray& scattered) const override {
         //calculate reflection
@@ -51,13 +51,13 @@ class specular :public material {
         //add fuzziness
         reflected = unit_vector(reflected) + (fuzz * random_unit_vector());
         scattered = Ray(rec.collision, reflected, r_in.time);
-        attenuation = albedo;
+        attenuation = tex->value(rec.u, rec.v, rec.collision);
         //ignore ray if fuzziness offest sends it through the object of original ray incidence.
         return (dot(scattered.direction, rec.normal) > 0);
     }
 
   private:
-    color albedo;
+    shared_ptr<texture> tex;
     double fuzz;
 };
 

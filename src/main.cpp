@@ -7,6 +7,7 @@
 #include "triangle.h"
 #include "camera.h"
 #include "bvh.h"
+#include "quad.h"
 
 
 void bouncing_spheres() {
@@ -78,7 +79,7 @@ void bouncing_spheres() {
 
 
 void checkered_spheres() {
-hittable_list world;
+    hittable_list world;
 
     auto checker = make_shared<checker_texture>(0.32, color(.2, .3, .1), color(.9, .9, .9));
 
@@ -127,12 +128,86 @@ void earth() {
     cam.render(hittable_list(globe));
 }
 
+void triangles() {
+    hittable_list world;
+
+    auto earth_texture = make_shared<image_texture>("earthmap.jpg");
+    auto earth_surface = make_shared<lambertian>(earth_texture);
+    //world.add(make_shared<Sphere>(point3(0,0, -4), 0.5, make_shared<lambertian>(color(1, 0, 0))));
+    world.add(make_shared<Triangle>(point3(-0.5, -0.5, -3.0), point3(0.5, -0.5, -6.0), point3(0.0, 0.5, -4.0), earth_surface));
+
+    world.add(make_shared<Sphere>(point3(0,-1, -4), 0.5, make_shared<lambertian>(color(0, 1, 0))));
+    world.add(make_shared<Sphere>(point3(1,1, -4), 0.5, make_shared<lambertian>(color(0, 0, 1))));
+
+    Camera cam;
+
+    cam.aspect_ratio      = 16.0 / 9.0;
+    cam.image_width       = 400;
+    cam.samples_per_pixel = 100;
+    cam.max_depth         = 50;
+
+    cam.vfov     = 40;
+    cam.position = point3(0,0,0);
+    cam.direction  = point3(0,0,-1);
+    cam.up      = Vec3(0,1,0);
+
+    cam.defocus_angle = 0;
+
+    cam.render(world);
+}
+
+
+void quads() {
+    hittable_list world;
+
+    // Materials
+    auto material3 = make_shared<specular>(color(0.8, 0.85, 0.8), 0);
+    auto left_red     = make_shared<lambertian>(color(1.0, 0.2, 0.2));
+    auto back_green   = make_shared<lambertian>(color(0.2, 1.0, 0.2));
+    auto right_blue   = make_shared<lambertian>(color(0.2, 0.2, 1.0));
+    auto upper_orange = make_shared<lambertian>(color(1.0, 0.5, 0.0));
+    auto lower_teal   = make_shared<lambertian>(color(0.2, 0.8, 0.8));
+
+    auto earth_texture = make_shared<image_texture>("earthmap.jpg");
+    auto earth_surface = make_shared<specular>(earth_texture, 0.0);
+
+    // Quads
+    world.add(make_shared<quad>(point3(-3,-2, 5), Vec3(0, 0,-4), Vec3(0, 4, 0), material3));
+    world.add(make_shared<quad>(point3(-2,-2, 0), Vec3(4, 0, 0), Vec3(0, 4, 0), material3));
+    world.add(make_shared<quad>(point3( 3,-2, 1), Vec3(0, 0, 4), Vec3(0, 4, 0), material3));
+    world.add(make_shared<quad>(point3(-2, 3, 1), Vec3(4, 0, 0), Vec3(0, 0, 4), material3));
+    world.add(make_shared<quad>(point3(-2,-3, 5), Vec3(4, 0, 0), Vec3(0, 0,-4), material3));
+    world.add(make_shared<Sphere>(point3(0, 0, 0), 1.5, earth_surface));
+    world.add(make_shared<Sphere>(point3(-2.0, 0, 0), 0.5, upper_orange));
+
+
+    
+
+    Camera cam;
+
+    cam.aspect_ratio      = 1.0;
+    cam.image_width       = 400;
+    cam.samples_per_pixel = 100;//100
+    cam.max_depth         = 50;//50
+
+    cam.vfov     = 80; //80
+    cam.position = point3(0,0,9);
+    cam.direction   = point3(0,0,0);
+    cam.up      = Vec3(0,1,0);
+
+    cam.defocus_angle = 0;
+
+    cam.render(world);
+}
+
 
 int main()
 {
-    switch(3) {
+    switch(5) {
         case 1: bouncing_spheres(); break;
         case 2: checkered_spheres(); break;
         case 3: earth(); break;
+        case 4: triangles(); break;
+        case 5: quads(); break;
     }
 }

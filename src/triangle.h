@@ -3,8 +3,8 @@
 #include "utility.h"
 #include "hittable.h"
 
-#define epsilon 1e-5
-#define cmpfloat(x, y) (abs(x-y) <= epsilon)
+#define epsilon 1e-8
+#define cmpfloat(x, y) (abs(x-y) < epsilon)
 #define MIN(x, y) (cmpfloat(x, y) ? y : x)
 #define MAX(x, y) (cmpfloat(x, y) ? x : y)
 
@@ -40,6 +40,8 @@ class Triangle : public hittable
         // find intersection with plane
         // t = (dot((plane_point - ray_origin), plane_normal) / dot(ray_direction, plane_normal))
         auto collision_time = dot(a - r.origin, normal) / dot(r.direction, normal);
+        if (!ray_t.contains(collision_time))
+            return false;
         auto p = r.at(collision_time);
 
         // Calculate barycentric coordinates
@@ -67,13 +69,13 @@ class Triangle : public hittable
     static void set_uv_coords_triangle(double& u, double& v, const double& alpha, const double& beta, const double& upsilon)
     {
         //for the trangles vertices a, b, c
-        auto a_u = 0.5; auto a_v = 1.0;
-        auto b_u = 0.0; auto b_v = 0.0;
-        auto c_u = 1.0; auto c_v = 0.0;
+        auto a_u = 0.0; auto a_v = 0.0;
+        auto b_u = 1.0; auto b_v = 1.0;
+        auto c_u = 0.0; auto c_v = 1.0;
 
 
         u = a_u + beta*(b_u - a_u) + upsilon*(c_u - a_u);
-        u = a_u + beta*(b_u - a_u) + upsilon*(c_u - a_u);
+        v = a_v + beta*(b_v - a_v) + upsilon*(c_v - a_v);
     }
     
     Bounding_Box bounding_box() const override { return bbox;}
