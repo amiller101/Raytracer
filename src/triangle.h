@@ -57,8 +57,23 @@ class Triangle : public hittable
         rec.collision = p;
         rec.set_face_normal(r, unit_vector(normal));
         rec.mat = mat;
+        set_uv_coords_triangle(rec.u, rec.v, alpha, beta, upsilon);
 
         return true;
+    }
+
+    //set u and v by converting the 3D cartesian point into 2D uv coordinates on the triangle's surface.
+    // alpha, beta, upsilon are the triangles barycentric coordinates for the point in question.
+    static void set_uv_coords_triangle(double& u, double& v, const double& alpha, const double& beta, const double& upsilon)
+    {
+        //for the trangles vertices a, b, c
+        auto a_u = 0.5; auto a_v = 1.0;
+        auto b_u = 0.0; auto b_v = 0.0;
+        auto c_u = 1.0; auto c_v = 0.0;
+
+
+        u = a_u + beta*(b_u - a_u) + upsilon*(c_u - a_u);
+        u = a_u + beta*(b_u - a_u) + upsilon*(c_u - a_u);
     }
     
     Bounding_Box bounding_box() const override { return bbox;}

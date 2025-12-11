@@ -69,13 +69,32 @@ class Sphere : public hittable
         Vec3 outward_normal = (rec.collision - current_center) / radius;
         rec.set_face_normal(r, outward_normal);
         rec.mat = mat;
+        //outward_normal = p relative to the center of the sphere.
+        set_uv_coords_sphere(outward_normal, rec.u, rec.v);
 
         return true;
+    }
+
+    //set u and v by converting the 3D cartesian point p into 2D uv coordinates on the sphere-wrapping surface.
+    static void set_uv_coords_sphere(const point3& p, double& u, double& v)
+    {
+        auto theta = acos(-p.y);
+        auto phi = atan2(-p.z, p.x) + pi;
+        u = phi/(2*pi);
+        v = theta/pi;
     }
 
     Bounding_Box bounding_box() const override { return bbox;}
     
     private:
+
+    Vec3 center;
+    double radius;
+    shared_ptr<material> mat;
+    Bounding_Box bbox;
+
+
+
     // --- Adaptive sampling helpers ---
     // These helpers compute tight per-axis minima/maxima for an arbitrary
     // position function `pos_func(t, origin)` over the time interval
@@ -168,9 +187,4 @@ class Sphere : public hittable
         return Bounding_Box(minima, maxima);
     }
 
-
-    Vec3 center;
-    double radius;
-    shared_ptr<material> mat;
-    Bounding_Box bbox;
 };
