@@ -218,6 +218,7 @@ void basic_lights() {
     auto difflight = make_shared<emissive>(color(5,5,4));
     //world.add(make_shared<Sphere>(point3(0,7,0), 2, difflight));
     world.add(make_shared<quad>(point3(3,1,-2), Vec3(2,0,0), Vec3(0,2,0), difflight));
+    world.add(make_shared<Sphere>(point3(0,5.5,0), 1, difflight));
 
     Camera cam;
 
@@ -276,7 +277,7 @@ void cornell_box() {
 
 int main()
 {
-    switch(7) {
+    switch(6) {
         case 1: bouncing_spheres(); break;
         case 2: checkered_spheres(); break;
         case 3: earth(); break;

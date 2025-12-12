@@ -14,7 +14,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 add_executable(Raytracer 
     src/main.cpp)
 
-#target_compile_options(Raytracer PRIVATE -fopenmmp) 
+target_compile_options(Raytracer PRIVATE -fopenmp)
+target_link_libraries(Raytracer PRIVATE gomp) 
 
 
 # --- Saved for Eckart Young in future --- #   

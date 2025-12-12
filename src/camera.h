@@ -2,6 +2,7 @@
 
 #include "hittable.h"
 #include "material.h"
+#include <omp.h> 
 
 class Camera{
     public:
@@ -22,13 +23,17 @@ class Camera{
     void render(const hittable& world){
         initialize();
 
+        std::vector<color> frame_buffer(image_width * image_height);
 
         std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
 
+        int pixels_completed = 0;
+
         //maps each pixel to a ray with origin at that pixel and with a direction
-        //given by the unit vector from focal_length behind   
+        //given by the unit vector from focal_length behind
+        #pragma omp parallel for collapse(2) schedule(dynamic, 1)
         for (int j = 0; j < image_height; j++) {
-            std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
+
             for (int i = 0; i < image_width; i++) {
                 color pixel_color(0,0,0);
                 //for each pixel/point, render as an average of randomly chosen nearby points.
@@ -36,7 +41,25 @@ class Camera{
                     Ray r = get_ray(i, j);
                     pixel_color += ray_color(r, max_depth, world);
                 }
-                write_color(std::cout, pixel_samples_scale * pixel_color);
+                frame_buffer[j * image_width + i] = pixel_samples_scale * pixel_color;
+
+                #pragma omp critical
+                {
+                    pixels_completed++;
+                    if (pixels_completed % image_width == 0) {
+                        int scanlines_remaining = image_height - (pixels_completed / image_width);
+                        std::clog << "\rScanlines remaining: " << scanlines_remaining << ' ' << std::flush;
+                    }
+                }
+            }
+        }
+
+
+        for (int j = 0; j < image_height; j++)
+        {
+            for (int i = 0; i < image_width; i++)
+            {
+                write_color(std::cout, frame_buffer[j * image_width + i]);
             }
         }
 

@@ -5,7 +5,8 @@
 #include <limits>
 #include <memory>
 #include <cstdlib>
-
+#include <omp.h> 
+#include <random>
 
 // C++ Std Usings
 using std::make_shared;
@@ -23,7 +24,9 @@ inline double degrees_to_radians(double degrees) {
 //returns canonical {in [0,1)} random real.
 inline double random_double()
 {
-    return std::rand() / (RAND_MAX + 1.0);
+    thread_local static std::mt19937 gen(std::random_device{}());
+    thread_local static std::uniform_real_distribution<double> dist(0.0, 1.0);
+    return dist(gen);
 }
 
 //returns random real in [min, max).
