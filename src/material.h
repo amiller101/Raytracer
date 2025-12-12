@@ -10,7 +10,12 @@ class material {
     //input: incoming ray, hit record data including the collision normal (defines reflectance behavior)
     //output: color of the material hit, reflected ray
     virtual bool scatter(const Ray& ray_in, const hit_record& rec, color& attenuation, Ray& scattered) const {
-        return false;
+      return false;
+    }
+
+    //If un-implemented, does not emit.
+    virtual color emitted(double u, double v, const point3& p) const {
+      return color(0,0,0);
     }
 
 };
@@ -88,7 +93,6 @@ class dielectric : public material {
       scattered = Ray(rec.collision, direction, r_in.time);
       return true;
     }
-
   private:
     // Refractive index in vacuum/air, or the ratio of the material's refractive index over refractive index of the encasing media.
     double refraction_index;
@@ -100,4 +104,19 @@ class dielectric : public material {
       return t + (1-t)*std::pow((1 - cos_angle_incidence),5);
     }
   
+};
+
+
+class emissive : public material {
+  public:
+    emissive(const color& emission) : tex(make_shared<solid_color>(emission)) {}
+    emissive(shared_ptr<texture> tex) : tex(tex) {}
+
+    //always absorbs rays. 
+    color emitted(double u, double v, const point3& p) const override {
+      return tex->value(u, v, p);
+    }
+
+  private:
+    shared_ptr<texture> tex;
 };

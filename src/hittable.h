@@ -34,3 +34,32 @@ class hittable
 
     virtual Bounding_Box bounding_box() const = 0;
 };
+
+class translate : public hittable {
+
+    translate(shared_ptr<hittable> object, const Vec3& translation) : object(object), translation(translation) {
+        bbox = object->bounding_box() + translation;
+    }
+
+    bool hit(const Ray& r, interval ray_t, hit_record& rec)
+    {
+        auto offset_ray = Ray(r.origin - translation, r.direction, r.time);
+    
+
+        if(!object->hit(offset_ray, ray_t, rec))
+        {
+            return false;
+        }
+
+        rec.collision += translation;
+
+        return true;
+    }
+
+    Bounding_Box bounding_box() const override { return bbox; }
+
+    private:
+    shared_ptr<hittable> object;
+    Vec3 translation;
+    Bounding_Box bbox;
+};

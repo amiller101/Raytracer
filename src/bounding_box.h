@@ -106,3 +106,13 @@ void pad_to_minimums() {
 
 const Bounding_Box Bounding_Box::empty    = Bounding_Box(interval::empty,    interval::empty,    interval::empty);
 const Bounding_Box Bounding_Box::universe = Bounding_Box(interval::universe, interval::universe, interval::universe);
+
+Bounding_Box operator+(const Bounding_Box& bbox, const Vec3& translation)
+{
+    return Bounding_Box(bbox.x + translation.x, bbox.y + translation.y, bbox.z + translation.z);
+}
+
+Bounding_Box operator+(const Vec3& translation, const Bounding_Box& bbox)
+{
+    return bbox + translation;
+}

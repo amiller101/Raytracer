@@ -45,3 +45,10 @@ class interval{
 const interval interval::empty = interval(+infinity, -infinity);
 const interval interval::universe = interval(-infinity, +infinity);
 
+interval operator+(const interval& intvl, double translation)
+{
+    return interval(intvl.min + translation, intvl.max + translation);
+}
+interval operator+(double translation, const interval& intvl) {
+    return intvl + translation;
+}

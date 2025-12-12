@@ -13,6 +13,7 @@ class Camera{
     point3 position = point3(0, 0, 0);
     Vec3 direction = Vec3(0, 0, -1);
     Vec3 up = Vec3(0, 1, 0);
+    color background;
 
     double defocus_angle = 0; //Variation angle of rays from camera center for a single pixel
     double focus_dist = 10; //Distance from the camera position to the focus plane
@@ -118,6 +119,7 @@ class Camera{
     }
 
     color ray_color(const Ray& r, int depth, const hittable& world){
+        //if exceeded bounce limit, gather no light.
         if (depth <= 0)
         {
             return color(0, 0, 0);
@@ -125,20 +127,27 @@ class Camera{
 
         hit_record rec;
 
-        if (world.hit(r, interval(0.001, infinity), rec)) {
-            color attenuation;
-            Ray scattered;
-            if (rec.mat->scatter(r, rec, attenuation, scattered))
-            {
-                return attenuation * ray_color(scattered, depth-1, world);
-            }
-
-            return color(0, 0, 0);
+        //if we hit nothing, return the background
+        if (!(world.hit(r, interval(0.001, infinity), rec)))
+        {
+            return background;
         }
 
-        Vec3 unit_direction = unit_vector(r.direction);
-        auto a = 0.5*(unit_direction.y + 1.0);
-        return (1.0-a)*color(1.0, 1.0, 1.0) + a*color(0.5, 0.7, 1.0);
+        //if we did hit something...
+        color attenuation;
+        Ray scattered;
+        color emission = rec.mat->emitted(rec.u, rec.v, rec.collision);
+
+        //if we scattered, follow next ray
+        if (rec.mat->scatter(r, rec, attenuation, scattered))
+        {
+            return emission + attenuation * ray_color(scattered, depth-1, world);
+        }
+        //otherwise return just emission
+        return emission;
     }
+
+
+
     
 };

@@ -75,3 +75,31 @@ class quad: public hittable {
     Vec3 w;
 
 };
+
+inline shared_ptr<hittable_list> box(const point3& a, const point3& b, shared_ptr<material> mat)
+{
+    auto sides = make_shared<hittable_list>();
+
+    //find min/max of each coord
+    Vec3 max = Vec3(MAX(a.x, b.x), MAX(a.y, b.y), MAX(a.z, b.z));
+    Vec3 min = Vec3(MIN(a.x, b.x), MIN(a.y, b.y), MIN(a.z, b.z));
+
+    //find variance of each coord
+    Vec3 dx = Vec3(max.x - min.x, 0, 0);
+    Vec3 dy = Vec3(0, max.y - min.y, 0);
+    Vec3 dz = Vec3(0, 0, max.z - min.z);
+
+    //create sides
+
+    // front and back
+    sides->add(make_shared<quad>(point3(min.x, min.y, min.z), dx, dy, mat));
+    sides->add(make_shared<quad>(point3(min.x, min.y, max.z), dx, dy, mat));
+    // left and right
+    sides->add(make_shared<quad>(point3(min.x, min.y, min.z), dz, dy, mat));
+    sides->add(make_shared<quad>(point3(max.x, min.y, min.z), dz, dy, mat));
+    // top and bottom
+    sides->add(make_shared<quad>(point3(min.x, min.y, min.z), dx, dz, mat));
+    sides->add(make_shared<quad>(point3(min.x, max.y, min.z), dx, dz, mat));
+
+    return sides;
+};

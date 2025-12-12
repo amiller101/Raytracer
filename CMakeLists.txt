@@ -10,11 +10,11 @@ set(CMAKE_CXX_STANDARD 17)
 #Force compiler to actually use C++ 17
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-#build an executable 'Raytracer.exe' from the following files, later add more like vec3.cpp
+#build an executable 'Raytracer.exe' from the following files
 add_executable(Raytracer 
     src/main.cpp)
 
-
+#target_compile_options(Raytracer PRIVATE -fopenmmp) 
 
 
 # --- Saved for Eckart Young in future --- #   
