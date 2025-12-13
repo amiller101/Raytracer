@@ -8,7 +8,7 @@
 #include "camera.h"
 #include "bvh.h"
 #include "quad.h"
-
+#include "obj_mesh.h"
 
 void bouncing_spheres() {
     
@@ -275,9 +275,47 @@ void cornell_box() {
 
 
 
+void first_model() {
+    hittable_list world;
+
+    // Materials
+    auto left_red     = make_shared<lambertian>(color(1.0, 0.2, 0.2));
+    auto back_green   = make_shared<lambertian>(color(0.2, 1.0, 0.2));
+    auto right_blue   = make_shared<lambertian>(color(0.2, 0.2, 1.0));
+
+
+    auto earth_texture = make_shared<image_texture>("earthmap.jpg");
+    auto earth_surface = make_shared<lambertian>(earth_texture);
+
+    auto light_tex = make_shared<emissive>(color(4, 4, 4));
+
+    auto bench = load_obj_mesh("models/bench/bench.obj");
+    world.add(bench);
+
+
+    Camera cam;
+
+    cam.aspect_ratio      = 1.0;
+    cam.image_width       = 400;
+    cam.samples_per_pixel = 100;//100
+    cam.max_depth         = 50;//50
+    cam.background        = color(0.70, 0.80, 1.00);
+
+    cam.vfov     = 30; //80
+    cam.position = point3(0,2,2);
+    cam.direction   = point3(0,0,0);
+    cam.up      = Vec3(0,1,0);
+
+    cam.defocus_angle = 0;
+
+    cam.render(world);
+}
+
+
+
 int main()
 {
-    switch(6) {
+    switch(8) {
         case 1: bouncing_spheres(); break;
         case 2: checkered_spheres(); break;
         case 3: earth(); break;
@@ -285,5 +323,6 @@ int main()
         case 5: quads(); break;
         case 6: basic_lights(); break;
         case 7: cornell_box(); break;
+        case 8: first_model(); break;
     }
 }

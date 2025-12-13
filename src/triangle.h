@@ -2,9 +2,10 @@
 
 #include "utility.h"
 #include "hittable.h"
+#include <vector>
 
-#define epsilon 1e-8
-#define cmpfloat(x, y) (abs(x-y) < epsilon)
+#define triangle_epsilon 1e-8
+#define cmpfloat(x, y) (abs(x-y) < triangle_epsilon)
 #define MIN(x, y) (cmpfloat(x, y) ? y : x)
 #define MAX(x, y) (cmpfloat(x, y) ? x : y)
 
@@ -89,3 +90,10 @@ class Triangle : public hittable
     Bounding_Box bbox;
 };
 
+
+inline shared_ptr<hittable_list> triangle_mesh(const point3& Q, std::vector<shared_ptr<Triangle>> triangles, shared_ptr<material> mat)
+{
+    auto fragments = make_shared<hittable_list>();
+
+    return fragments;
+};
