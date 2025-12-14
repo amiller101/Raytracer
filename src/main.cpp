@@ -340,11 +340,23 @@ void perlin() {
 
 void cube_map() {
     hittable_list world;
+    
+    auto glass = make_shared<Sphere>(point3(0,1,0), 2, make_shared<dielectric>(1.5));
+    auto metal = make_shared<Sphere>(point3(0,1,0), 1, make_shared<specular>(color(1,1,1), 0.0));
 
-    auto per_tex = make_shared<marble_texture>(4);
-    //world.add(make_shared<Sphere>(point3(0,-1000,0), 1000, make_shared<lambertian>(per_tex)));
-    world.add(make_shared<Sphere>(point3(0,1,0), 2, make_shared<dielectric>(1.5)));
-    world.add(make_shared<Sphere>(point3(0,1,0), 1, make_shared<specular>(color(1,1,1), 0.0)));
+    //translations
+    auto glass_Lshifted = make_shared<translate>(glass, Vec3(0, 0, 3));
+    auto metal_Lshifted = make_shared<translate>(metal, Vec3(0, 0, 3));
+
+    auto glass_Rshifted = make_shared<translate>(glass, Vec3(0, 0, -3));
+    auto metal_Rshifted = make_shared<translate>(metal, Vec3(0, 0, -3));
+
+    world.add(glass);
+    world.add(glass_Lshifted);
+    world.add(glass_Rshifted);
+    world.add(metal);
+    world.add(metal_Lshifted);
+    world.add(metal_Rshifted);
 
 
     Camera cam;
@@ -354,20 +366,20 @@ void cube_map() {
     cam.samples_per_pixel = 200; //100
     cam.max_depth         = 50;
 
-    cam.vfov     = 25;
+    cam.vfov     = 35;
     cam.position = point3(13,2,3);
     cam.direction   = point3(0,0,0);
     cam.up      = Vec3(0,1,0);
 
     cam.defocus_angle = 0;
     cam.background        = color(0.70, 0.80, 1.00);
-    cam.set_cubemap("cube_maps/MarriottMadisonWest");
+    cam.set_cubemap("cube_maps/Park2");
 
     cam.render(world);
 }
 
  
-void ouchie() {
+void pretty_sphere() {
     hittable_list world;
 
     //auto per_tex = make_shared<marble_texture>(4);

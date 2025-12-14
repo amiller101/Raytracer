@@ -36,12 +36,13 @@ class hittable
 };
 
 class translate : public hittable {
+    public:
 
     translate(shared_ptr<hittable> object, const Vec3& translation) : object(object), translation(translation) {
         bbox = object->bounding_box() + translation;
     }
 
-    bool hit(const Ray& r, interval ray_t, hit_record& rec)
+    bool hit(const Ray& r, interval ray_t, hit_record& rec) const override
     {
         auto offset_ray = Ray(r.origin - translation, r.direction, r.time);
     
