@@ -1,7 +1,8 @@
 #pragma once
 #include "hittable.h"
 #include "image.h"
-#include<vector>
+#include <vector>
+#include "perlin.h"
 
 class texture {
 
@@ -80,4 +81,38 @@ class image_texture : public texture {
     private:
     Image image;
 
+};
+
+class noise_texture : public texture {
+    public:
+    noise_texture(double frequency) : frequency(frequency) {}
+
+    //Here we must map the [-1, 1] noise value to [0, 1], hence the addition and division.
+    color value(double u, double v, const point3& p) const override {
+        return color(1, 1, 1) * 0.5 * (1 + noise_generator.turbulence(p * frequency));
+    }
+    
+    
+    private:
+    perlin noise_generator;
+    double frequency;
+};
+
+
+class marble_texture : public texture {
+    public:
+    marble_texture(double frequency) : frequency(frequency) {}
+
+  
+    //The sin() domain is bent by noise.
+    //This is referred to and domain warping, and creates
+    //the folding structure in marble.
+    color value(double u, double v, const point3& p) const override {
+        return color(0.5, 0.5, 0.5) * (1 + sin(frequency * p.z + 10 * noise_generator.turbulence(p, 7)));
+    }
+    
+    
+    private:
+    perlin noise_generator;
+    double frequency;
 };

@@ -312,10 +312,35 @@ void first_model() {
 }
 
 
+void perlin() {
+    hittable_list world;
+
+    auto per_tex = make_shared<noise_texture>(4);
+    world.add(make_shared<Sphere>(point3(0,-1000,0), 1000, make_shared<lambertian>(per_tex)));
+    world.add(make_shared<Sphere>(point3(0,2,0), 2, make_shared<lambertian>(per_tex)));
+
+    Camera cam;
+
+    cam.aspect_ratio      = 16.0 / 9.0;
+    cam.image_width       = 400;
+    cam.samples_per_pixel = 100;
+    cam.max_depth         = 50;
+
+    cam.vfov     = 20;
+    cam.position = point3(13,2,3);
+    cam.direction   = point3(0,0,0);
+    cam.up      = Vec3(0,1,0);
+
+    cam.defocus_angle = 0;
+    cam.background        = color(0.70, 0.80, 1.00);
+
+
+    cam.render(world);
+}
 
 int main()
 {
-    switch(8) {
+    switch(9) {
         case 1: bouncing_spheres(); break;
         case 2: checkered_spheres(); break;
         case 3: earth(); break;
@@ -324,5 +349,6 @@ int main()
         case 6: basic_lights(); break;
         case 7: cornell_box(); break;
         case 8: first_model(); break;
+        case 9: perlin(); break;
     }
 }
