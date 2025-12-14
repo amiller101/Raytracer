@@ -22,7 +22,9 @@ class Image {
         // Hunt for the image file in some likely locations.
         if (load(filename)) return;
         if (load("images/" + filename)) return;
+        if (load("cube_maps/" + filename)) return;
         if (load("../images/" + filename)) return;
+        if (load("../cube_maps/" + filename)) return;
         if (load("../../images/" + filename)) return;
         if (load("../../../images/" + filename)) return;
         if (load("../../../../images/" + filename)) return;

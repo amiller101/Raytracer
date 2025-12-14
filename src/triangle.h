@@ -4,11 +4,6 @@
 #include "hittable.h"
 #include <vector>
 
-#define triangle_epsilon 1e-8
-#define cmpfloat(x, y) (abs(x-y) < triangle_epsilon)
-#define MIN(x, y) (cmpfloat(x, y) ? y : x)
-#define MAX(x, y) (cmpfloat(x, y) ? x : y)
-
 class Triangle : public hittable
 {
     public:

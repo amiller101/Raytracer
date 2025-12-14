@@ -58,6 +58,10 @@ class image_texture : public texture {
     image_texture(const char* image_filename) : image(image_filename) {}
 
     color value(double u, double v, const point3& p) const override {
+        return value(u, v);
+    }
+
+    color value(double u, double v) const{
         //return cyan if invalid image size
         if (image.height() <= 0 || image.width() <= 0)
         {
@@ -89,10 +93,10 @@ class noise_texture : public texture {
 
     //Here we must map the [-1, 1] noise value to [0, 1], hence the addition and division.
     color value(double u, double v, const point3& p) const override {
-        return color(1, 1, 1) * 0.5 * (1 + noise_generator.turbulence(p * frequency));
+        return color(1, 1, 1) * 0.5 * (1 + noise_generator.noise(p * frequency));
     }
     
-    
+
     private:
     perlin noise_generator;
     double frequency;

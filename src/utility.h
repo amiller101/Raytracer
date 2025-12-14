@@ -8,6 +8,11 @@
 #include <omp.h> 
 #include <random>
 
+#define triangle_epsilon 1e-8
+#define cmpfloat(x, y) (abs(x-y) < triangle_epsilon)
+#define MIN(x, y) (cmpfloat(x, y) ? y : x)
+#define MAX(x, y) (cmpfloat(x, y) ? x : y)
+
 // C++ Std Usings
 using std::make_shared;
 using std::shared_ptr;

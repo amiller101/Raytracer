@@ -3,6 +3,7 @@
 #include "hittable.h"
 #include "material.h"
 #include <omp.h> 
+#include "cube_map.h"
 
 class Camera{
     public:
@@ -15,6 +16,8 @@ class Camera{
     Vec3 direction = Vec3(0, 0, -1);
     Vec3 up = Vec3(0, 1, 0);
     color background;
+    Cube_Map cubemap;
+    bool has_cubemap = false;
 
     double defocus_angle = 0; //Variation angle of rays from camera center for a single pixel
     double focus_dist = 10; //Distance from the camera position to the focus plane
@@ -65,6 +68,13 @@ class Camera{
 
         std::clog << "\rDone.                 \n";
     }
+
+    void set_cubemap(const char* image_filename)
+    {
+        cubemap = Cube_Map(image_filename);
+        has_cubemap = true;
+    }
+
 
     private:
     int image_height;       //Rendered image height
@@ -150,10 +160,13 @@ class Camera{
 
         hit_record rec;
 
-        //if we hit nothing, return the background
+        //if we hit nothing, return the background or enviroment (cube map)
         if (!(world.hit(r, interval(0.001, infinity), rec)))
         {
-            return background;
+            if (!has_cubemap) {
+                return background;
+            }
+            return cubemap.value(r.direction);
         }
 
         //if we did hit something...
