@@ -120,3 +120,19 @@ class emissive : public material {
   private:
     shared_ptr<texture> tex;
 };
+
+
+class isotropic : public material{
+  public:
+    isotropic(const color& albedo) : tex(make_shared<solid_color>(albedo)) {}
+    isotropic(shared_ptr<texture> tex) : tex(tex) {}
+
+    bool scatter(const Ray& r_in, const hit_record& rec, color& attenuation, Ray& scattered) const override {
+      scattered = Ray(rec.collision, random_unit_vector(), r_in.time);
+      attenuation = tex->value(rec.u, rec.v, rec.collision);
+      return true;
+    }
+
+  private:
+    shared_ptr<texture> tex;
+};

@@ -86,9 +86,12 @@ class Triangle : public hittable
 };
 
 
+
+
+
+
 inline shared_ptr<hittable_list> triangle_mesh(const point3& Q, std::vector<shared_ptr<Triangle>> triangles, shared_ptr<material> mat)
 {
     auto fragments = make_shared<hittable_list>();
-
     return fragments;
 };

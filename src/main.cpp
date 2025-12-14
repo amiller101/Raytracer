@@ -9,6 +9,7 @@
 #include "bvh.h"
 #include "quad.h"
 #include "obj_mesh.h"
+#include "volume.h"
 
 void bouncing_spheres() {
     
@@ -362,9 +363,9 @@ void cube_map() {
     Camera cam;
 
     cam.aspect_ratio      = 16.0 / 9.0;
-    cam.image_width       = 800; //400
-    cam.samples_per_pixel = 200; //100
-    cam.max_depth         = 50;
+    cam.image_width       = 3000; //400
+    cam.samples_per_pixel = 500; //100
+    cam.max_depth         = 150; //50
 
     cam.vfov     = 35;
     cam.position = point3(13,2,3);
@@ -406,9 +407,51 @@ void pretty_sphere() {
 }
 
 
+void cornell_smoke() {
+    hittable_list world;
+
+    auto red   = make_shared<lambertian>(color(.65, .05, .05));
+    auto white = make_shared<lambertian>(color(.73, .73, .73));
+    auto green = make_shared<lambertian>(color(.12, .45, .15));
+    auto light = make_shared<emissive>(color(7, 7, 7));
+
+    world.add(make_shared<quad>(point3(555,0,0), Vec3(0,555,0), Vec3(0,0,555), green));
+    world.add(make_shared<quad>(point3(0,0,0), Vec3(0,555,0), Vec3(0,0,555), red));
+    world.add(make_shared<quad>(point3(113,554,127), Vec3(330,0,0), Vec3(0,0,305), light));
+    world.add(make_shared<quad>(point3(0,555,0), Vec3(555,0,0), Vec3(0,0,555), white));
+    world.add(make_shared<quad>(point3(0,0,0), Vec3(555,0,0), Vec3(0,0,555), white));
+    world.add(make_shared<quad>(point3(0,0,555), Vec3(555,0,0), Vec3(0,555,0), white));
+
+    shared_ptr<hittable> box1 = box(point3(0,0,0), point3(165,330,165), white);
+    box1 = make_shared<translate>(box1, Vec3(265,0,295));
+
+    shared_ptr<hittable> box2 = box(point3(0,0,0), point3(165,165,165), white);
+    box2 = make_shared<translate>(box2, Vec3(130,0,65));
+
+    world.add(make_shared<constant_medium>(box1, 0.01, color(0,0,0)));
+    world.add(make_shared<constant_medium>(box2, 0.01, color(1,1,1)));
+
+    Camera cam;
+
+    cam.aspect_ratio      = 1.0;
+    cam.image_width       = 600;
+    cam.samples_per_pixel = 200;
+    cam.max_depth         = 50;
+    cam.background        = color(0,0,0);
+
+    cam.vfov     = 40;
+    cam.position = point3(278, 278, -800);
+    cam.direction   = point3(278, 278, 0);
+    cam.up      = Vec3(0,1,0);
+
+    cam.defocus_angle = 0;
+
+    cam.render(world);
+}
+
 int main()
 {
-    switch(10) {
+    switch(11) {
         case 1: bouncing_spheres(); break;
         case 2: checkered_spheres(); break;
         case 3: earth(); break;
@@ -419,5 +462,6 @@ int main()
         case 8: first_model(); break;
         case 9: perlin(); break;
         case 10: cube_map(); break;
+        case 11: cornell_smoke(); break;
     }
 }
