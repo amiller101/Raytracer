@@ -6,9 +6,9 @@
 #include "bvh.h"
 
 auto default_mat = make_shared<lambertian>(color(0.8, 0.8, 0.8));
+bool smooth = true;
 
-
-shared_ptr<hittable> load_obj_mesh(const std::string& filename)
+shared_ptr<hittable> load_obj_mesh(const std::string& filename, bool smooth)
 {
     tinyobj::ObjReaderConfig config;
     config.triangulate = true; // ensures all faces are triangles
@@ -96,7 +96,7 @@ shared_ptr<hittable> load_obj_mesh(const std::string& filename)
                 idx1.normal_index >= 0 &&
                 idx2.normal_index >= 0;
 
-            if (has_normals) {
+            if (has_normals && smooth) {
                 auto get_n = [&](tinyobj::index_t idx) {
                     return Vec3(
                         attrib.normals[3 * idx.normal_index + 0],
@@ -110,9 +110,7 @@ shared_ptr<hittable> load_obj_mesh(const std::string& filename)
                 Vec3 n2 = get_n(idx2);
 
                 tris->add(
-                    //make_shared<smooth_triangle>(v0, v1, v2, n0, n1, n2)
-                    make_shared<Triangle>(v0, v1, v2, mat)
-
+                    make_shared<Smooth_Triangle>(v0, v1, v2, n0, n1, n2, mat)
                 );
 
             } else {
