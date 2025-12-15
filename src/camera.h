@@ -42,8 +42,8 @@ class Camera{
                 //for each pixel/point, render as an average of randomly chosen nearby points.
                 for (int sample = 0; sample < samples_per_pixel; sample++) {
                     Ray r = get_ray(i, j);
-                    pixel_color += ray_color(r, max_depth, world);
-                }
+                        pixel_color += ray_color(r, max_depth, world);
+                    }   
                 frame_buffer[j * image_width + i] = pixel_samples_scale * pixel_color;
 
                 #pragma omp critical
@@ -182,8 +182,5 @@ class Camera{
         //otherwise return just emission
         return emission;
     }
-
-
-
     
 };
