@@ -13,6 +13,9 @@ Build in VScode, everything is already setup properly with CMakeLists.txt
 
 
 # Implementation details
+See 'Raytracer.pdf' for overview.
+
+The following is a few extra notes.
 ## Diffuse Materials
 Currently using true lambertian. This is done with random angle reflections away from the surface, weighted more towards the normal of ray incidence. This weighting is acheived by sending rays from the point of incidence to a random point on a unit sphere centered at the end of the unit-normal ray. This generally provides more physically-based results than sending the ray to a random point of a hemisphere centered at the point of ray incidence, but both techniques may be useful in varying scenarios.
 
@@ -23,7 +26,7 @@ We compute the gamma (or brightness) of a color linearly in RGB, but as humans w
 
 
 
-## Create Eckart Young approximation of last rendered image (Not functional yet):
+# Create Eckart Young approximation of last rendered image (Not functional yet):
     build/Eckart_Young.exe < results/image.ppm
     the image is saved at results/svd_image.ppm
 
